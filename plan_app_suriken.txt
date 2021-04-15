@@ -1,0 +1,10 @@
+admin ->
+	moze da doda film                                                   ()
+	moze da pogleda sve filmove, njihovo stanje i ko ih rentira
+	moze da promeni stanje na lageru                                    ()
+gledalac ->
+	moze da pogleda sve filmove u ponudi                                ()
+	moze da pretrazuje filmove po zanrovima
+	moze da odabere film iz ponude i rentira ga                         ()
+	moze da rentira koliko god zeli filmova                             ()
+	moze da vrati film
