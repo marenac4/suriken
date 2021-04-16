@@ -65,7 +65,7 @@ public class MovieServiceImpl implements MovieService {
         Movie movieToReturn = movieRepository.findById(movieId)
                 .orElseThrow();
 
-        movieRenter = renterRepository.findById(movieRenter.getRenterId())
+        movieRenter = renterRepository.findById(movieRenter.getId())
                 .orElseThrow();
 
         movieToReturn.incrementStockByOne();
