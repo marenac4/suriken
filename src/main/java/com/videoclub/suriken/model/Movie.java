@@ -26,13 +26,7 @@ public class Movie {
     @ManyToMany()
     private List<MovieRenter> renters = new ArrayList<>();
 
-    public Movie(Long id,
-                 String name,
-                 int year,
-                 Genre genre,
-                 String director,
-                 int stock,
-                 List<MovieRenter> renters) {
+    public Movie(Long id,String name, int year, Genre genre, String director, int stock, List<MovieRenter> renters) {
         this.id = id;
         this.name = name;
         this.year = year;
