@@ -34,7 +34,7 @@ public class RenterServiceImpl implements RenterService {
         System.out.println("-------------------- When get movie is called ---------------------");
 
         movieRenter.getRentedMovies()
-                .forEach(movie -> System.out.println("DEBUG: Renter is renting : " + movie.getMovName()));
+                .forEach(movie -> System.out.println("DEBUG: Renter is renting : " + movie.getName()));
 
         return movieRenter;
     }

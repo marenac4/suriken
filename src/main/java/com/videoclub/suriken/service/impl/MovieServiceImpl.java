@@ -24,7 +24,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public void addMovieToDb(Movie movie) {
-        movie.setMovGenre(Movie.Genre.Drama);
+        movie.setGenre(Movie.Genre.Drama);
         movieRepository.save(movie);
     }
 
@@ -32,7 +32,7 @@ public class MovieServiceImpl implements MovieService {
     public List<Movie> getAllMovies() {
         List<Movie> movies = movieRepository.findAll();
 
-        movies.forEach(movie -> System.out.println("Movie" + movie.getMovName() + "has :" + movie.getMovieRenters().size()));
+        movies.forEach(movie -> System.out.println("Movie" + movie.getName() + "has :" + movie.getRenters().size()));
 
         return movies;
     }

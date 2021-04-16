@@ -10,43 +10,43 @@ public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long movId;
+    private Long id;
 
-    private String movName;
+    private String name;
 
-    private int movYear;
+    private int year;
 
     @Enumerated(EnumType.STRING)
-    private Genre movGenre;
+    private Genre genre;
 
-    private String movDirector;
+    private String director;
 
     private int stock;
 
     @ManyToMany()
-    private List<MovieRenter> movieRenters = new ArrayList<>();
+    private List<MovieRenter> renters = new ArrayList<>();
 
-    public Movie(Long movId,
-                 String movName,
-                 int movYear,
-                 Genre movGenre,
-                 String movDirector,
+    public Movie(Long id,
+                 String name,
+                 int year,
+                 Genre genre,
+                 String director,
                  int stock,
-                 List<MovieRenter> movieRenters) {
-        this.movId = movId;
-        this.movName = movName;
-        this.movYear = movYear;
-        this.movGenre = movGenre;
-        this.movDirector = movDirector;
+                 List<MovieRenter> renters) {
+        this.id = id;
+        this.name = name;
+        this.year = year;
+        this.genre = genre;
+        this.director = director;
         this.stock = stock;
-        this.movieRenters = movieRenters;
+        this.renters = renters;
     }
 
     public Movie() {
     }
 
     public void addMovieRenter(MovieRenter movieRenter) {
-        movieRenters.add(movieRenter);
+        renters.add(movieRenter);
         movieRenter.addRentedMovie(this);
     }
 
@@ -57,64 +57,64 @@ public class Movie {
 //                break;
 //            }
 
-        movieRenters.remove(movieRenter);
+        renters.remove(movieRenter);
         movieRenter.removeRentedMovie(this);
     }
 
-    public Long getMovId() {
-        return movId;
+    public Long getId() {
+        return id;
     }
 
-    public String getMovName() {
-        return movName;
+    public String getName() {
+        return name;
     }
 
-    public int getMovYear() {
-        return movYear;
+    public int getYear() {
+        return year;
     }
 
-    public Genre getMovGenre() {
-        return movGenre;
+    public Genre getGenre() {
+        return genre;
     }
 
-    public String getMovDirector() {
-        return movDirector;
+    public String getDirector() {
+        return director;
     }
 
     public int getStock() {
         return stock;
     }
 
-    public List<MovieRenter> getMovieRenters() {
-        return movieRenters;
+    public List<MovieRenter> getRenters() {
+        return renters;
     }
 
-    public void setMovId(Long movId) {
-        this.movId = movId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setMovName(String movName) {
-        this.movName = movName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setMovYear(int movYear) {
-        this.movYear = movYear;
+    public void setYear(int year) {
+        this.year = year;
     }
 
-    public void setMovGenre(Genre movGenre) {
-        this.movGenre = movGenre;
+    public void setGenre(Genre genre) {
+        this.genre = genre;
     }
 
-    public void setMovDirector(String movDirector) {
-        this.movDirector = movDirector;
+    public void setDirector(String director) {
+        this.director = director;
     }
 
     public void setStock(int stock) {
         this.stock = stock;
     }
 
-    public void setMovieRenters(List<MovieRenter> movieRenters) {
-        this.movieRenters = movieRenters;
+    public void setRenters(List<MovieRenter> renters) {
+        this.renters = renters;
     }
 
     public boolean decrementStockValueByOne() {
