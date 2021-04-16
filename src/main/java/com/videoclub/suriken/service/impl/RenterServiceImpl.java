@@ -13,7 +13,6 @@ public class RenterServiceImpl implements RenterService {
 
     private final RenterRepository renterRepository;
 
-    @Autowired
     public RenterServiceImpl(RenterRepository renterRepository) {
         this.renterRepository = renterRepository;
     }

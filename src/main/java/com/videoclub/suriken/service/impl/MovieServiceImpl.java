@@ -16,7 +16,6 @@ public class MovieServiceImpl implements MovieService {
     private final MovieRepository movieRepository;
     private final RenterRepository renterRepository;
 
-    @Autowired
     public MovieServiceImpl(MovieRepository movieRepository, RenterRepository renterRepository) {
         this.movieRepository = movieRepository;
         this.renterRepository = renterRepository;

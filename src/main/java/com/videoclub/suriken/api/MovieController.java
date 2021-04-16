@@ -14,7 +14,6 @@ public class MovieController {
 
     private final MovieServiceImpl movieService;
 
-    @Autowired
     public MovieController(MovieServiceImpl movieService) {
         this.movieService = movieService;
     }
