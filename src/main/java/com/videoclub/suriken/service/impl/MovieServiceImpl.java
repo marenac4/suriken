@@ -5,13 +5,16 @@ import com.videoclub.suriken.model.MovieRenter;
 import com.videoclub.suriken.repository.MovieRepository;
 import com.videoclub.suriken.repository.RenterRepository;
 import com.videoclub.suriken.service.MovieService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class MovieServiceImpl implements MovieService {
+
+    Logger logger = LoggerFactory.getLogger(MovieServiceImpl.class);
 
     private final MovieRepository movieRepository;
     private final RenterRepository renterRepository;
@@ -23,7 +26,6 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public void addMovieToDb(Movie movie) {
-        movie.setGenre(Movie.Genre.Drama);
         movieRepository.save(movie);
     }
 
@@ -31,7 +33,7 @@ public class MovieServiceImpl implements MovieService {
     public List<Movie> getAllMovies() {
         List<Movie> movies = movieRepository.findAll();
 
-        movies.forEach(movie -> System.out.println("Movie" + movie.getName() + "has :" + movie.getRenters().size()));
+        movies.forEach(movie -> logger.debug("Movie" + movie.getName() + "has :" + movie.getRenters().size()));
 
         return movies;
     }
@@ -58,9 +60,6 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public String returnAMovie(Long movieId, MovieRenter movieRenter) {
-
-        System.out.println("*********** Returning a movie ************");
-
         Movie movieToReturn = movieRepository.findById(movieId)
                 .orElseThrow();
 
@@ -70,7 +69,6 @@ public class MovieServiceImpl implements MovieService {
         movieToReturn.incrementStockByOne();
         movieToReturn.removeMovieRenter(movieRenter);
         movieRepository.save(movieToReturn);
-
 
         return "Movie successfully returned!";
     }
