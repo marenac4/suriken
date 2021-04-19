@@ -20,7 +20,7 @@ public class MovieRenter {
 
     private String mail;
 
-    @ManyToMany(mappedBy = "movieRenters")
+    @ManyToMany(mappedBy = "renters")
     @JsonIgnore
     private List<Movie> rentedMovies = new ArrayList<>();
 
@@ -41,7 +41,6 @@ public class MovieRenter {
     }
 
     public void removeRentedMovie(Movie movie) {
-        System.out.println("Renter : " + this.getFirstName() + "removeRentedMovie method inside model class" + rentedMovies.size());
         rentedMovies.remove(movie);
     }
 
@@ -83,5 +82,16 @@ public class MovieRenter {
 
     public void setRentedMovies(List<Movie> rentedMovies) {
         this.rentedMovies = rentedMovies;
+    }
+
+    @Override
+    public String toString() {
+        return "MovieRenter{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", mail='" + mail + '\'' +
+                ", rentedMovies=" + rentedMovies +
+                '}';
     }
 }

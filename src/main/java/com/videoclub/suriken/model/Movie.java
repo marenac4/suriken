@@ -45,12 +45,6 @@ public class Movie {
     }
 
     public void removeMovieRenter(MovieRenter movieRenter) {
-//        for (int i = 0; i < movieRenters.size(); i++)
-//            if (movieRenters.get(i).getRenterId().equals(movieRenter.getRenterId())) {
-//                movieRenters.remove(i);
-//                break;
-//            }
-
         renters.remove(movieRenter);
         movieRenter.removeRentedMovie(this);
     }
@@ -111,6 +105,18 @@ public class Movie {
         this.renters = renters;
     }
 
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", year=" + year +
+                ", genre=" + genre +
+                ", director='" + director + '\'' +
+                ", stock=" + stock +
+                '}';
+    }
+
     public boolean decrementStockValueByOne() {
         if (stock > 0) {
             stock--;
@@ -122,21 +128,5 @@ public class Movie {
 
     public void incrementStockByOne() {
         stock++;
-    }
-
-    public enum Genre {
-        Thriller ("Thriller"),
-        Drama ("Drama"),
-        Comedy ("Comedy");
-
-        private String name;
-
-        public String getName() {
-            return name;
-        }
-
-        Genre(String name) {
-            this.name = name;
-        }
     }
 }
