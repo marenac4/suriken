@@ -21,7 +21,6 @@ public class MovieServiceImpl implements MovieService {
         this.renterRepository = renterRepository;
     }
 
-
     @Override
     public void addMovieToDb(Movie movie) {
         movie.setGenre(Movie.Genre.Drama);
