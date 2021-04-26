@@ -11,9 +11,9 @@ public interface MovieService {
 
     List<Movie> getAllMovies();
 
-    String rentAMovie(Long movieId, MovieRenter movieRenter);
+    void rentAMovie(Long movieId, Long renterId);
 
     Movie getMovie(Long movieId);
 
-    String returnAMovie(Long movieId, MovieRenter movieRenter);
+    void returnAMovie(Long movieId, Long renterId);
 }

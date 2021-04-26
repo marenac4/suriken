@@ -3,8 +3,8 @@ package com.videoclub.suriken.api;
 import com.videoclub.suriken.model.Movie;
 import com.videoclub.suriken.model.MovieRenter;
 import com.videoclub.suriken.service.impl.MovieServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,8 +13,6 @@ import java.util.List;
 @RestController
 public class MovieController {
 
-    Logger logger = LoggerFactory.getLogger(MovieController.class);
-
     private final MovieServiceImpl movieService;
 
     public MovieController(MovieServiceImpl movieService) {
@@ -22,29 +20,31 @@ public class MovieController {
     }
 
     @PostMapping
-    public void addMovie(@RequestBody Movie movie){
-        logger.info("Example log from {}", MovieController.class.getSimpleName());
+    public ResponseEntity addMovie(@RequestBody Movie movie){
         movieService.addMovieToDb(movie);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<Movie> getAllMovies() {
-        return movieService.getAllMovies();
+    public ResponseEntity<List<Movie>> getAllMovies() {
+        return new ResponseEntity<>(movieService.getAllMovies(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Movie getMovie(@PathVariable(name = "id") Long movieId) {
-        return movieService.getMovie(movieId);
+    public ResponseEntity<Movie> getMovie(@PathVariable(name = "id") Long movieId) {
+        return new ResponseEntity<>(movieService.getMovie(movieId), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public String rentAMovie(@PathVariable(name = "id") Long movieId, @RequestBody MovieRenter movieRenter) {
-        return movieService.rentAMovie(movieId, movieRenter);
+    public ResponseEntity rentAMovie(@PathVariable(name = "id") Long movieId, @RequestParam(name = "renterId") Long renterId) {
+        movieService.rentAMovie(movieId, renterId);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PutMapping("/return/{id}")
-    public String returnAMovie( @PathVariable(name = "id") Long movieId, @RequestBody MovieRenter movieRenter) {
-        return movieService.returnAMovie(movieId, movieRenter);
+    public ResponseEntity returnAMovie( @PathVariable(name = "id") Long movieId, @RequestParam(name = "renterId") Long renterId) {
+        movieService.returnAMovie(movieId, renterId);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }

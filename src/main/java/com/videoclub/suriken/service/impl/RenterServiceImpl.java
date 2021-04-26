@@ -1,5 +1,6 @@
 package com.videoclub.suriken.service.impl;
 
+import com.videoclub.suriken.exceptions.RestException;
 import com.videoclub.suriken.model.MovieRenter;
 import com.videoclub.suriken.repository.RenterRepository;
 import com.videoclub.suriken.service.RenterService;
@@ -33,10 +34,10 @@ public class RenterServiceImpl implements RenterService {
 
     @Override
     public MovieRenter getRenter(Long renterId) {
-        MovieRenter movieRenter = renterRepository.findById(renterId).orElseThrow();
+        MovieRenter movieRenter = renterRepository.findById(renterId)
+                .orElseThrow(() -> new RestException("Exception.renterNotFound", new String[]{renterId.toString()}));
 
         logger.debug("-------------------- When get movie is called ---------------------");
-
         movieRenter.getRentedMovies()
                 .forEach(movie -> logger.debug("Renter is renting : {}", movie));
 

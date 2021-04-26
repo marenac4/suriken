@@ -2,7 +2,8 @@ package com.videoclub.suriken.api;
 
 import com.videoclub.suriken.model.MovieRenter;
 import com.videoclub.suriken.service.RenterService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,18 +20,19 @@ public class RenterController {
     }
 
     @PostMapping
-    public void addRenter(@RequestBody MovieRenter movieRenter) {
+    public ResponseEntity addRenter(@RequestBody MovieRenter movieRenter) {
         renterService.addMovieRenter(movieRenter);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<MovieRenter> getAllRenters() {
-        return renterService.getAllRenters();
+    public ResponseEntity<List<MovieRenter>> getAllRenters() {
+        return new ResponseEntity<>(renterService.getAllRenters(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public MovieRenter getRenter(@PathVariable(name = "id") Long renterId) {
-        return renterService.getRenter(renterId);
+    public ResponseEntity<MovieRenter> getRenter(@PathVariable(name = "id") Long renterId) {
+        return new ResponseEntity<>(renterService.getRenter(renterId), HttpStatus.OK);
     }
 
 }

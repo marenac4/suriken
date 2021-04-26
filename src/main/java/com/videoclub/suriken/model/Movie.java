@@ -117,13 +117,8 @@ public class Movie {
                 '}';
     }
 
-    public boolean decrementStockValueByOne() {
-        if (stock > 0) {
-            stock--;
-            return true;
-        } else {
-            return false;
-        }
+    public void decrementStockValueByOne() {
+        if (stock > 0) stock--;
     }
 
     public void incrementStockByOne() {

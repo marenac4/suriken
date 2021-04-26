@@ -1,5 +1,7 @@
 package com.videoclub.suriken.service.impl;
 
+import com.videoclub.suriken.exceptions.NoMovieInStockException;
+import com.videoclub.suriken.exceptions.RestException;
 import com.videoclub.suriken.model.Movie;
 import com.videoclub.suriken.model.MovieRenter;
 import com.videoclub.suriken.repository.MovieRepository;
@@ -33,43 +35,43 @@ public class MovieServiceImpl implements MovieService {
     public List<Movie> getAllMovies() {
         List<Movie> movies = movieRepository.findAll();
 
-        movies.forEach(movie -> logger.debug("Movie" + movie.getName() + "has :" + movie.getRenters().size()));
+        movies.forEach(movie -> logger.debug("Movie {} has this number of renters: {}" , movie.getName(), movie.getRenters().size()));
 
         return movies;
     }
 
     @Override
-    public String rentAMovie(Long movieId, MovieRenter movieRenter) {
+    public void rentAMovie(Long movieId, Long renterId) {
         Movie movieToRent = movieRepository.findById(movieId)
-                .orElseThrow();
+                .orElseThrow(() -> new RestException("Exception.movieNotFound", new String[]{movieId.toString()}));
 
-        if (movieToRent.decrementStockValueByOne()) {
-            movieToRent.addMovieRenter(movieRenter);
-            movieRepository.save(movieToRent);
-            return "Movie successfully rented!";
-        }
-        else {
-            return "Sorry! There is no movie in the stock.";
-        }
+        if (movieToRent.getStock() == 0)
+            throw new NoMovieInStockException("Exception.NoMovieInStock", new String[]{movieToRent.getId().toString(), movieToRent.getName()});
+
+        MovieRenter movieRenter = renterRepository.findById(renterId)
+                .orElseThrow(() -> new RestException("Exception.renterNotFound", new String[]{renterId.toString()}));
+
+        movieToRent.decrementStockValueByOne();
+        movieToRent.addMovieRenter(movieRenter);
+        movieRepository.save(movieToRent);
     }
 
     @Override
     public Movie getMovie(Long movieId) {
-        return movieRepository.findById(movieId).orElseThrow();
+        return movieRepository.findById(movieId)
+                .orElseThrow(() -> new RestException("Exception.movieNotFound", new String[]{movieId.toString()}));
     }
 
     @Override
-    public String returnAMovie(Long movieId, MovieRenter movieRenter) {
+    public void returnAMovie(Long movieId, Long renterId) {
         Movie movieToReturn = movieRepository.findById(movieId)
-                .orElseThrow();
+                .orElseThrow(() -> new RestException("Exception.movieNotFound", null));
 
-        movieRenter = renterRepository.findById(movieRenter.getId())
-                .orElseThrow();
+        MovieRenter movieRenter = renterRepository.findById(renterId)
+                .orElseThrow(() -> new RestException("Exception.renterNotFound", new String[]{renterId.toString()}));
 
         movieToReturn.incrementStockByOne();
         movieToReturn.removeMovieRenter(movieRenter);
         movieRepository.save(movieToReturn);
-
-        return "Movie successfully returned!";
     }
 }
