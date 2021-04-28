@@ -32,22 +32,6 @@ public class RestMessage {
     public enum MessageType {
         MOVIE_NOT_FOUND,
         NO_MOVIE_IN_STOCK,
-
-        // Duletovi
-        ARGUMENT_NOT_VALID,
-        CONSTRAINT_VIOLATION,
-        CONSTRAINT_VIOLATION_PARAMS,
-        DATA_INTEGRITY_VIOLATION,
-        MESSAGE_NOT_READABLE,
-        MISSING_SERVLET_REQUEST_PARAM,
-        REQUEST_REJECTED,
-
-        FORBIDDEN,
-        RESOURCE_ALREADY_EXISTS,
         RESOURCE_NOT_FOUND,
-        ENTITY_NOT_FOUND,
-        CONFLICT_OCCURRED,
-
-        INTERNAL_SERVER_ERROR;
     }
 }
