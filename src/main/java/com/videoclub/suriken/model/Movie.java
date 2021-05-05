@@ -9,7 +9,7 @@ import java.util.List;
 public class Movie {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
@@ -23,7 +23,8 @@ public class Movie {
 
     private int stock;
 
-    @ManyToMany()
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "movies_their_renters", joinColumns = {@JoinColumn(name = "movie_id")}, inverseJoinColumns = {@JoinColumn(name = "renter_id")})
     private List<MovieRenter> renters = new ArrayList<>();
 
     public Movie(Long id,String name, int year, Genre genre, String director, int stock, List<MovieRenter> renters) {
@@ -37,16 +38,6 @@ public class Movie {
     }
 
     public Movie() {
-    }
-
-    public void addMovieRenter(MovieRenter movieRenter) {
-        renters.add(movieRenter);
-        movieRenter.addRentedMovie(this);
-    }
-
-    public void removeMovieRenter(MovieRenter movieRenter) {
-        renters.remove(movieRenter);
-        movieRenter.removeRentedMovie(this);
     }
 
     public Long getId() {
