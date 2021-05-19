@@ -52,7 +52,7 @@ public class MovieServiceImpl implements MovieService {
                 .orElseThrow(() -> new RestException("Exception.renterNotFound", new String[]{renterId.toString()}));
 
         movieToRent.decrementStockValueByOne();
-        movieToRent.addMovieRenter(movieRenter);
+        movieToRent.getRenters().add(movieRenter);
         movieRepository.save(movieToRent);
     }
 
@@ -71,7 +71,7 @@ public class MovieServiceImpl implements MovieService {
                 .orElseThrow(() -> new RestException("Exception.renterNotFound", new String[]{renterId.toString()}));
 
         movieToReturn.incrementStockByOne();
-        movieToReturn.removeMovieRenter(movieRenter);
+        movieToReturn.getRenters().remove(movieRenter);
         movieRepository.save(movieToReturn);
     }
 }
