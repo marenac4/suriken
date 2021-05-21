@@ -37,6 +37,15 @@ public class Movie {
         this.renters = renters;
     }
 
+    public Movie(Long id,String name, int year, Genre genre, String director, int stock) {
+        this.id = id;
+        this.name = name;
+        this.year = year;
+        this.genre = genre;
+        this.director = director;
+        this.stock = stock;
+    }
+
     public Movie() {
     }
 

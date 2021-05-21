@@ -32,6 +32,13 @@ public class MovieRenter {
         this.rentedMovies = rentedMovies;
     }
 
+    public MovieRenter(Long id, String firstName, String lastName, String mail) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.mail = mail;
+    }
+
     public MovieRenter(){
 
     }
