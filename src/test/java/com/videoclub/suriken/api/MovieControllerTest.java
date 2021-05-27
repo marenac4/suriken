@@ -153,7 +153,4 @@ class MovieControllerTest {
         assertThat(fetchedMovie.get().getRenters().size()).isEqualTo(0);
         assertThat(fetchedRenter.get().getRentedMovies().size()).isEqualTo(0);
     }
-
-
-
 }
