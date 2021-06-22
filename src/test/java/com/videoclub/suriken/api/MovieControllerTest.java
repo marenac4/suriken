@@ -26,8 +26,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MovieControllerTest {
 
-    Logger logger = LoggerFactory.getLogger(MovieControllerTest.class);
-
     @Autowired
     private MovieRepository movieRepository;
 
@@ -37,14 +35,6 @@ class MovieControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-//    @BeforeAll
-//    static void beforeAll() {
-//        Movie movie1 = new Movie(null, "Titanik", 1995, Genre.DRAMA, "James Camoron", 3);
-//        Movie movie2 = new Movie(null, "The Shawshank Redemption", 1994, Genre.DRAMA, "Frank Darabont", 5);
-//        Movie movie3 = new Movie(null, "The Godfather", 1972, Genre.CRIME, "Francis Ford Coppola", 1);
-//        Movie movie4 = new Movie(null, "The Dark Knight", 2008, Genre.ACTION, "Christopher Nolan", 7);
-//    }
-
     @Test
     void successfullyAddMovie() {
         HttpEntity<Movie> request = new HttpEntity<>(new Movie(null, "Titanik", 1995, Genre.DRAMA, "James Camoron", 3));
@@ -53,17 +43,21 @@ class MovieControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         Optional<Movie> respMovie = movieRepository.findMovieByName("Titanik");
-//        logger.info("Id of saved movie is {}", respMovie.get().getId());
         assertThat(respMovie.isPresent()).isEqualTo(true);
     }
 
     @Test
     void getAMovieWhenExist() {
-        movieRepository.save(new Movie(null, "Titanik", 1995, Genre.DRAMA, "James Camoron", 3));
+        movieRepository.save(new Movie(null, "Titanik", 1995, Genre.DRAMA, "James Cameron", 3));
 
         ResponseEntity<Movie> response = restTemplate.getForEntity("/api/v1/movie/1", Movie.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getName()).isEqualTo("Titanik");
+        assertThat(response.getBody().getYear()).isEqualTo(1995);
+        assertThat(response.getBody().getGenre()).isEqualTo(Genre.DRAMA);
+        assertThat(response.getBody().getDirector()).isEqualTo("James Cameron");
+        assertThat(response.getBody().getStock()).isEqualTo(3);
     }
 
     @Test
@@ -75,7 +69,7 @@ class MovieControllerTest {
 
     @Test
     void getAllMovies() {
-        Movie movie1 = new Movie(null, "Titanik", 1995, Genre.DRAMA, "James Camoron", 3);
+        Movie movie1 = new Movie(null, "Titanik", 1995, Genre.DRAMA, "James Cameron", 3);
         Movie movie2 = new Movie(null, "The Shawshank Redemption", 1994, Genre.DRAMA, "Frank Darabont", 5);
         Movie movie3 = new Movie(null, "The Godfather", 1972, Genre.CRIME, "Francis Ford Coppola", 1);
         Movie movie4 = new Movie(null, "The Dark Knight", 2008, Genre.ACTION, "Christopher Nolan", 7);
@@ -87,13 +81,15 @@ class MovieControllerTest {
 
         List<Movie> resMovies = Arrays.asList(response.getBody());
 
-        resMovies.forEach(movie -> logger.debug("Movie name : {}", movie.getName()));
-
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         AtomicInteger ind = new AtomicInteger();
         for (Movie mov : movies) {
-            assertThat(resMovies.get(ind.getAndIncrement()).getName()).isEqualTo(mov.getName());
+            assertThat(resMovies.get(ind.get()).getName()).isEqualTo(mov.getName());
+            assertThat(resMovies.get(ind.get()).getGenre()).isEqualTo(mov.getGenre());
+            assertThat(resMovies.get(ind.get()).getDirector()).isEqualTo(mov.getDirector());
+            assertThat(resMovies.get(ind.get()).getStock()).isEqualTo(mov.getStock());
+            assertThat(resMovies.get(ind.getAndIncrement()).getYear()).isEqualTo(mov.getYear());
         }
     }
 
@@ -120,8 +116,6 @@ class MovieControllerTest {
         movieRepository.save(movie);
         MovieRenter renter = new MovieRenter(null, "Marko", "Lazovic", "marko@gmail.com");
         renterRepository.save(renter);
-
-        logger.info("movie id: {} renter id: {}", movie.getId(), renter.getId());
 
         HttpEntity<?> req = HttpEntity.EMPTY;
         ResponseEntity<?> response = restTemplate.exchange("/api/v1/movie/{id}?renterId={renterId}", HttpMethod.PUT, req, Void.class, 1,1);
