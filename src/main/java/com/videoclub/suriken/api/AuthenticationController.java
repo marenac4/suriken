@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +29,8 @@ import java.util.Map;
 @RestController
 public class AuthenticationController {
 
-    String key = "videoclubsurikensecurekeyvideoclubsurikensecurekey";
+    @Value("${SURIKEN_SECRET_KEY}")
+    String key;
 
     Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
