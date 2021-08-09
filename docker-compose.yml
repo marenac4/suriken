@@ -1,0 +1,21 @@
+version: '3'
+services:
+  postgres-suriken:
+    image: postgres:alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: cetvorka4
+      POSTGRES_DB: suriken
+  suriken-app:
+    build: .
+    ports:
+      - "8081:8081"
+    environment:
+      - DB_URL=jdbc:postgresql://postgres-suriken:5432/suriken
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=cetvorka4
+    depends_on:
+      - postgres-suriken
