@@ -5,9 +5,8 @@ import com.videoclub.suriken.model.Movie;
 import com.videoclub.suriken.model.MovieRenter;
 import com.videoclub.suriken.repository.MovieRepository;
 import com.videoclub.suriken.repository.RenterRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -35,6 +34,12 @@ class MovieControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @AfterEach
+    void cleanDataBase() {
+        movieRepository.deleteAll();
+        renterRepository.deleteAll();
+    }
+
     @Test
     void successfullyAddMovie() {
         HttpEntity<Movie> request = new HttpEntity<>(new Movie(null, "Titanik", 1995, Genre.DRAMA, "James Camoron", 3));
@@ -48,9 +53,10 @@ class MovieControllerTest {
 
     @Test
     void getAMovieWhenExist() {
-        movieRepository.save(new Movie(null, "Titanik", 1995, Genre.DRAMA, "James Cameron", 3));
+        Movie movie = new Movie(null, "Titanik", 1995, Genre.DRAMA, "James Cameron", 3);
+        movieRepository.save(movie);
 
-        ResponseEntity<Movie> response = restTemplate.getForEntity("/api/v1/movie/1", Movie.class);
+        ResponseEntity<Movie> response = restTemplate.getForEntity("/api/v1/movie/{id}", Movie.class, movie.getId());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getName()).isEqualTo("Titanik");
@@ -95,14 +101,20 @@ class MovieControllerTest {
 
     @Test
     void successfullyRentAMovie() {
-        movieRepository.save(new Movie(null, "Titanik", 1995, Genre.DRAMA, "James Camoron", 3));
-        renterRepository.save(new MovieRenter(null, "Marko", "Lazovic", "marko@gmail.com"));
+        Movie movie = new Movie(null, "Titanik", 1995, Genre.DRAMA, "James Camoron", 3);
+        movieRepository.save(movie);
+        MovieRenter renter = new MovieRenter(null, "Marko", "Lazovic", "marko@gmail.com");
+        renterRepository.save(renter);
+
+        System.out.println("Persisted movie id");
+        System.out.println(movie.getId());
+        System.out.println(renter.getId());
 
         HttpEntity<?> req = HttpEntity.EMPTY;
-        ResponseEntity<?> response = restTemplate.exchange("/api/v1/movie/{id}?renterId={renterId}", HttpMethod.PUT, req, Void.class, 1,1);
+        ResponseEntity<?> response = restTemplate.exchange("/api/v1/movie/{id}?renterId={renterId}", HttpMethod.PUT, req, Void.class, movie.getId(), renter.getId());
 
-        Optional<Movie> fetchedMovie = movieRepository.findMovieByIdAndTheirRenters(1L);
-        Optional<MovieRenter> fetchedRenter = renterRepository.findRenterByIdAndRentedMovies(1L);
+        Optional<Movie> fetchedMovie = movieRepository.findMovieByIdAndTheirRenters(movie.getId());
+        Optional<MovieRenter> fetchedRenter = renterRepository.findRenterByIdAndRentedMovies(renter.getId());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(fetchedMovie.get().getRenters().get(0).getFirstName()).isEqualTo("Marko");
@@ -138,10 +150,10 @@ class MovieControllerTest {
         movieRepository.save(movie);
 
         HttpEntity<?> req = HttpEntity.EMPTY;
-        ResponseEntity<?> response = restTemplate.exchange("/api/v1/movie/return/{id}?renterId={renterId}", HttpMethod.PUT, req, Void.class, 1,1);
+        ResponseEntity<?> response = restTemplate.exchange("/api/v1/movie/return/{id}?renterId={renterId}", HttpMethod.PUT, req, Void.class, movie.getId(), renter.getId());
 
-        Optional<Movie> fetchedMovie = movieRepository.findMovieByIdAndTheirRenters(1L);
-        Optional<MovieRenter> fetchedRenter = renterRepository.findRenterByIdAndRentedMovies(1L);
+        Optional<Movie> fetchedMovie = movieRepository.findMovieByIdAndTheirRenters(movie.getId());
+        Optional<MovieRenter> fetchedRenter = renterRepository.findRenterByIdAndRentedMovies(renter.getId());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(fetchedMovie.get().getRenters().size()).isEqualTo(0);

@@ -3,6 +3,7 @@ package com.videoclub.suriken.api;
 import com.videoclub.suriken.model.Movie;
 import com.videoclub.suriken.model.MovieRenter;
 import com.videoclub.suriken.repository.RenterRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -24,16 +25,15 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RenterControllerTest {
 
-    Logger logger = LoggerFactory.getLogger(MovieControllerTest.class);
-
     @Autowired
     private RenterRepository renterRepository;
 
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @BeforeEach
-    void setUp() {
+    @AfterEach
+    void cleanDataBase() {
+        renterRepository.deleteAll();
     }
 
     @Test
@@ -74,7 +74,7 @@ class RenterControllerTest {
         MovieRenter renter = new MovieRenter(null, "Marko", "Lazovic", "ml@gmail.com");
         renterRepository.save(renter);
 
-        ResponseEntity<MovieRenter> response = restTemplate.getForEntity("/api/v1/renter/1", MovieRenter.class);
+        ResponseEntity<MovieRenter> response = restTemplate.getForEntity("/api/v1/renter/{id}", MovieRenter.class, renter.getId());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getMail()).isEqualTo("ml@gmail.com");
