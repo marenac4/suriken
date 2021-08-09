@@ -29,8 +29,6 @@ public class MyUserDetailsService implements UserDetailsService {
 
         AppUser user = appUserRepository.findAppUserByUserName(userName).orElseThrow();
 
-//        return new User("marenac4", passwordEncoder.encode("cetvorka4"), new ArrayList<>());
-
         MyUserDetail myUserDetail = new MyUserDetail(user);
         return myUserDetail;
     }
