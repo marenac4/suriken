@@ -7,7 +7,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,13 +21,13 @@ import java.io.IOException;
 
 public class JwtTokenVerifier extends OncePerRequestFilter {
 
-    @Value("${SURIKEN_SECRET_KEY}")
     String key;
 
     MyUserDetailsService userDetailsService;
 
-    public JwtTokenVerifier(MyUserDetailsService userDetailsService) {
+    public JwtTokenVerifier(MyUserDetailsService userDetailsService, String key) {
         this.userDetailsService = userDetailsService;
+        this.key = key;
     }
 
     @Override

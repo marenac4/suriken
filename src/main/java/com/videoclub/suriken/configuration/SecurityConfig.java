@@ -2,6 +2,7 @@ package com.videoclub.suriken.configuration;
 
 import com.videoclub.suriken.jwt.JwtTokenVerifier;
 import com.videoclub.suriken.security.MyUserDetailsService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +16,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Value("${SURIKEN_SECRET_KEY}")
+    String key;
 
     private final MyUserDetailsService myUserDetailService;
 
@@ -33,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(new JwtTokenVerifier(myUserDetailService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenVerifier(myUserDetailService, key), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/authenticate").permitAll()
                 .anyRequest().authenticated();
