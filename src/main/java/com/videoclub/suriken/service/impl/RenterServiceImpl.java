@@ -36,10 +36,6 @@ public class RenterServiceImpl implements RenterService {
         MovieRenter movieRenter = renterRepository.findById(renterId)
                 .orElseThrow(() -> new RestException("Exception.renterNotFound", new String[]{renterId.toString()}));
 
-        logger.debug("-------------------- When get movie is called ---------------------");
-        movieRenter.getRentedMovies()
-                .forEach(movie -> logger.debug("Renter is renting : {}", movie));
-
         return movieRenter;
     }
 }

@@ -17,5 +17,6 @@ services:
       - DB_URL=jdbc:postgresql://postgres-suriken:5432/suriken
       - DB_USERNAME=postgres
       - DB_PASSWORD=cetvorka4
+      - SURIKEN_SECRET_KEY=surikensecurekeysurikensecurekeysurikensecurekeysurikensecurekeysurikensecurekey
     depends_on:
       - postgres-suriken
