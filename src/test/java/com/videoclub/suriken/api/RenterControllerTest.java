@@ -1,5 +1,7 @@
 package com.videoclub.suriken.api;
 
+import com.videoclub.suriken.jwt.AuthenticationRequest;
+import com.videoclub.suriken.jwt.AuthenticationResponse;
 import com.videoclub.suriken.model.Movie;
 import com.videoclub.suriken.model.MovieRenter;
 import com.videoclub.suriken.repository.RenterRepository;
@@ -11,9 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +31,16 @@ class RenterControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    private String jwtToken;
+
+    @BeforeEach
+    void auth() {
+        HttpEntity<AuthenticationRequest> request = new HttpEntity<>(new AuthenticationRequest("marenac", "cetvorka"));
+        ResponseEntity<AuthenticationResponse> response = restTemplate.postForEntity("/authenticate", request, AuthenticationResponse.class);
+
+        jwtToken = response.getBody().getJwt();
+    }
+
     @AfterEach
     void cleanDataBase() {
         renterRepository.deleteAll();
@@ -38,7 +48,9 @@ class RenterControllerTest {
 
     @Test
     void successfullyAddRenter() {
-        HttpEntity<MovieRenter> request = new HttpEntity<>(new MovieRenter(null, "Marko", "Lazovic", "marko@gmail.com"));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(jwtToken);
+        HttpEntity<MovieRenter> request = new HttpEntity<>(new MovieRenter(null, "Marko", "Lazovic", "marko@gmail.com"), headers);
 
         ResponseEntity response = restTemplate.postForEntity("/api/v1/renter", request, Void.class);
 
@@ -57,7 +69,10 @@ class RenterControllerTest {
         List<MovieRenter> renters = Arrays.asList(renter1, renter2, renter3);
         renterRepository.saveAll(renters);
 
-        ResponseEntity<MovieRenter[]> response = restTemplate.getForEntity("/api/v1/renter", MovieRenter[].class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(jwtToken);
+        HttpEntity request = new HttpEntity(headers);
+        ResponseEntity<MovieRenter[]> response = restTemplate.exchange("/api/v1/renter", HttpMethod.GET, request, MovieRenter[].class);
 
         List<MovieRenter> rentersFromResponse = Arrays.asList(response.getBody());
 
@@ -74,7 +89,10 @@ class RenterControllerTest {
         MovieRenter renter = new MovieRenter(null, "Marko", "Lazovic", "ml@gmail.com");
         renterRepository.save(renter);
 
-        ResponseEntity<MovieRenter> response = restTemplate.getForEntity("/api/v1/renter/{id}", MovieRenter.class, renter.getId());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(jwtToken);
+        HttpEntity request = new HttpEntity(headers);
+        ResponseEntity<MovieRenter> response = restTemplate.exchange("/api/v1/renter/{id}", HttpMethod.GET, request, MovieRenter.class, renter.getId());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getMail()).isEqualTo("ml@gmail.com");
@@ -82,7 +100,10 @@ class RenterControllerTest {
 
     @Test
     void badRequestWhenThereIsNoRenter() {
-        ResponseEntity<MovieRenter> response = restTemplate.getForEntity("/api/v1/renter/1", MovieRenter.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(jwtToken);
+        HttpEntity request = new HttpEntity(headers);
+        ResponseEntity<MovieRenter> response = restTemplate.exchange("/api/v1/renter/1", HttpMethod.GET, request, MovieRenter.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
